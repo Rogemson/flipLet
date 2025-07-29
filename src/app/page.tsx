@@ -94,39 +94,69 @@ export default function Home() {
   return (
     <div className="min-h-screen dark:black">
       <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-4xl font-bold text-slate-900 dark:text-slate-100 mb-2">Flashcard Generator</h1>
-            <p className="text-slate-600 dark:text-slate-400">Create and study flashcards offline</p>
-          </div>
-          <div className="flex items-center gap-3">
-            {/* Social Links */}
-            <div className="flex items-center gap-1">
-              <Button variant="ghost" size="sm" asChild>
-                <a href="https://github.com/rogemson" target="_blank" rel="noopener noreferrer" title="GitHub">
-                  <Github className="w-4 h-4" />
-                </a>
-              </Button>
-              
-              <Button variant="ghost" size="sm" asChild>
-                <a href="https://www.facebook.com/rgmsnmln" target="_blank" rel="noopener noreferrer" title="Twitter">
-                  <Facebook className="w-4 h-4" />
-                </a>
-              </Button>
-              
-              <Button variant="ghost" size="sm" asChild>
-                <a href="https://www.linkedin.com/in/rogemson-molina/" target="_blank" rel="noopener noreferrer" title="LinkedIn">
-                  <Linkedin className="w-4 h-4" />
-                </a>
-              </Button>
+        <div className="mb-8">
+          
+
+          {/* Header section */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="text-center md:text-left">
+              <h1 className="text-4xl font-bold text-slate-900 dark:text-slate-100 mb-2">FlipLet</h1>
+              <p className="text-slate-600 dark:text-slate-400">Create and study flashcards</p>
             </div>
             
-            <ThemeToggle />
-            
-            <Button onClick={() => setIsCreateDialogOpen(true)} className="gap-2" size="lg">
-              <Plus className="w-5 h-5" />
-              Create Deck
-            </Button>
+            {/* Mobile: Social links on top */}
+            <div className="flex justify-center mb-4 md:hidden">
+              <div className="flex items-center gap-1">
+                <Button variant="ghost" size="sm" asChild>
+                  <a href="https://github.com/rogemson" target="_blank" rel="noopener noreferrer" title="GitHub">
+                    <Github className="w-4 h-4" />
+                  </a>
+                </Button>
+                
+                <Button variant="ghost" size="sm" asChild>
+                  <a href="https://facebook.com/rgmsnmln" target="_blank" rel="noopener noreferrer" title="Twitter">
+                    <Facebook className="w-4 h-4" />
+                  </a>
+                </Button>
+                
+                <Button variant="ghost" size="sm" asChild>
+                  <a href="https://www.linkedin.com/in/rogemson-molina/" target="_blank" rel="noopener noreferrer" title="LinkedIn">
+                    <Linkedin className="w-4 h-4" />
+                  </a>
+                </Button>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-center md:justify-end gap-3">
+              {/* Desktop: Social links inline */}
+              <div className="hidden md:flex items-center gap-1">
+                <Button variant="ghost" size="sm" asChild>
+                  <a href="https://github.com" target="_blank" rel="noopener noreferrer" title="GitHub">
+                    <Github className="w-4 h-4" />
+                  </a>
+                </Button>
+                
+                <Button variant="ghost" size="sm" asChild>
+                  <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" title="Twitter">
+                    <Facebook className="w-4 h-4" />
+                  </a>
+                </Button>
+                
+                <Button variant="ghost" size="sm" asChild>
+                  <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" title="LinkedIn">
+                    <Linkedin className="w-4 h-4" />
+                  </a>
+                </Button>
+              </div>
+              
+              <ThemeToggle />
+              
+              <Button onClick={() => setIsCreateDialogOpen(true)} className="gap-2" size="lg">
+                <Plus className="w-5 h-5" />
+                <span className="hidden sm:inline">Create Deck</span>
+                <span className="sm:hidden">Create</span>
+              </Button>
+            </div>
           </div>
         </div>
 
