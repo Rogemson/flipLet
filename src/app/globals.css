@@ -120,3 +120,24 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+/* Math rendering styles */
+.math-content .math-display {
+  @apply block text-center my-2 text-lg;
+  font-family: "Times New Roman", serif; /* Ensure consistent font for math */
+}
+
+.math-content .math-inline {
+  @apply inline;
+  font-family: "Times New Roman", serif; /* Ensure consistent font for math */
+}
+
+/* MathJax styling */
+.MathJax {
+  @apply text-slate-900 dark:text-slate-100;
+}
+
+.MathJax_Display {
+  @apply text-center my-2;
+}

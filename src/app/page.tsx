@@ -116,7 +116,7 @@ export default function Home() {
 
             <div className="flex items-center gap-3 ml-2">
               <a
-                href="https://github.com/yourusername"
+                href="https://github.com/Rogemson"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-slate-600 dark:text-slate-300 hover:text-black dark:hover:text-white transition"
@@ -124,7 +124,7 @@ export default function Home() {
                 <Github className="w-5 h-5" />
               </a>
               <a
-                href="https://linkedin.com/in/yourusername"
+                href="www.linkedin.com/in/rogemson-molina"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-slate-600 dark:text-slate-300 hover:text-blue-700 transition"
@@ -132,15 +132,7 @@ export default function Home() {
                 <Linkedin className="w-5 h-5" />
               </a>
               <a
-                href="https://twitter.com/yourusername"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-slate-600 dark:text-slate-300 hover:text-blue-500 transition"
-              >
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a
-                href="https://twitter.com/yourusername"
+                href="https://www.facebook.com/rgmsnmln"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-slate-600 dark:text-slate-300 hover:text-blue-500 transition"

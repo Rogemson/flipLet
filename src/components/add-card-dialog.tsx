@@ -1,8 +1,9 @@
 "use client"
 
 import type React from "react"
+import Image from "next/image" // Import next/image
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -18,8 +19,9 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Plus, Minus } from "lucide-react"
+import { Plus, Minus, Upload, X, ImageIcon } from "lucide-react"
 import type { Flashcard } from "@/app/page"
+import { MathRenderer } from "@/components/math-renderer"
 
 export type CardType = "basic" | "multiple-choice" | "true-false"
 
@@ -27,6 +29,8 @@ export interface ExtendedFlashcard extends Flashcard {
   type: CardType
   options?: string[]
   correctAnswer?: number | boolean
+  frontImage?: string
+  backImage?: string
 }
 
 interface AddCardDialogProps {
@@ -42,6 +46,11 @@ export function AddCardDialog({ open, onOpenChange, onAddCard }: AddCardDialogPr
   const [options, setOptions] = useState<string[]>(["", "", "", ""])
   const [correctAnswer, setCorrectAnswer] = useState<number>(0)
   const [trueFalseAnswer, setTrueFalseAnswer] = useState<boolean>(true)
+  const [frontImage, setFrontImage] = useState<string>("")
+  const [backImage, setBackImage] = useState<string>("")
+
+  const frontImageRef = useRef<HTMLInputElement>(null)
+  const backImageRef = useRef<HTMLInputElement>(null)
 
   const resetForm = () => {
     setCardType("basic")
@@ -50,6 +59,21 @@ export function AddCardDialog({ open, onOpenChange, onAddCard }: AddCardDialogPr
     setOptions(["", "", "", ""])
     setCorrectAnswer(0)
     setTrueFalseAnswer(true)
+    setFrontImage("")
+    setBackImage("")
+  }
+
+  const handleImageUpload = (file: File, side: "front" | "back") => {
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      const result = e.target?.result as string
+      if (side === "front") {
+        setFrontImage(result)
+      } else {
+        setBackImage(result)
+      }
+    }
+    reader.readAsDataURL(file)
   }
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -68,6 +92,8 @@ export function AddCardDialog({ open, onOpenChange, onAddCard }: AddCardDialogPr
           type: cardType,
           options: options.map((opt) => opt.trim()),
           correctAnswer,
+          frontImage: frontImage || undefined,
+          backImage: backImage || undefined,
         }
         break
       case "true-false":
@@ -76,6 +102,8 @@ export function AddCardDialog({ open, onOpenChange, onAddCard }: AddCardDialogPr
           back: trueFalseAnswer ? "True" : "False",
           type: cardType,
           correctAnswer: trueFalseAnswer,
+          frontImage: frontImage || undefined,
+          backImage: backImage || undefined,
         }
         break
       default:
@@ -84,6 +112,8 @@ export function AddCardDialog({ open, onOpenChange, onAddCard }: AddCardDialogPr
           front: front.trim(),
           back: back.trim(),
           type: cardType,
+          frontImage: frontImage || undefined,
+          backImage: backImage || undefined,
         }
     }
 
@@ -116,10 +146,13 @@ export function AddCardDialog({ open, onOpenChange, onAddCard }: AddCardDialogPr
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] max-h-[80vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add New Flashcard</DialogTitle>
-          <DialogDescription>Create a new flashcard with different question types.</DialogDescription>
+          <DialogDescription>
+            Create a new flashcard with different question types. You can add images and use LaTeX for formulas (e.g.,
+            $$E = mc^2$$).
+          </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit}>
@@ -150,15 +183,62 @@ export function AddCardDialog({ open, onOpenChange, onAddCard }: AddCardDialogPr
                 onChange={(e) => setFront(e.target.value)}
                 placeholder={
                   cardType === "basic"
-                    ? "Enter your question..."
+                    ? "Enter your question... (Use $$formula$$ for math)"
                     : cardType === "multiple-choice"
-                      ? "Enter your multiple choice question..."
-                      : "Enter a true or false statement..."
+                      ? "Enter your multiple choice question... (Use $$formula$$ for math)"
+                      : "Enter a true or false statement... (Use $$formula$$ for math)"
                 }
                 rows={3}
                 className="mt-1"
                 required
               />
+
+              {/* Front Image Upload */}
+              <div className="mt-2 flex items-center gap-2">
+                <input
+                  ref={frontImageRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0], "front")}
+                  className="hidden"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => frontImageRef.current?.click()}
+                  className="gap-2"
+                >
+                  <Upload className="w-3 h-3" />
+                  Add Image
+                </Button>
+                {frontImage && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setFrontImage("")}
+                    className="text-red-600 hover:text-red-700"
+                  >
+                    <X className="w-3 h-3" />
+                    Remove
+                  </Button>
+                )}
+              </div>
+
+              {frontImage && (
+                <div className="mt-2">
+                  <Image
+                    src={frontImage || "/placeholder.svg"}
+                    alt="Front side preview"
+                    width={200} // Placeholder width
+                    height={120} // Placeholder height
+                    objectFit="contain"
+                    className="max-w-full h-32 object-contain rounded border"
+                    unoptimized // Required for base64 images
+                  />
+                </div>
+              )}
             </div>
 
             {/* Card Type Specific Fields */}
@@ -169,18 +249,65 @@ export function AddCardDialog({ open, onOpenChange, onAddCard }: AddCardDialogPr
                   id="back"
                   value={back}
                   onChange={(e) => setBack(e.target.value)}
-                  placeholder="Enter the answer..."
+                  placeholder="Enter the answer... (Use $$formula$$ for math)"
                   rows={3}
                   className="mt-1"
                   required
                 />
+
+                {/* Back Image Upload */}
+                <div className="mt-2 flex items-center gap-2">
+                  <input
+                    ref={backImageRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0], "back")}
+                    className="hidden"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => backImageRef.current?.click()}
+                    className="gap-2"
+                  >
+                    <Upload className="w-3 h-3" />
+                    Add Image
+                  </Button>
+                  {backImage && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setBackImage("")}
+                      className="text-red-600 hover:text-red-700"
+                    >
+                      <X className="w-3 h-3" />
+                      Remove
+                    </Button>
+                  )}
+                </div>
+
+                {backImage && (
+                  <div className="mt-2">
+                    <Image
+                      src={backImage || "/placeholder.svg"}
+                      alt="Back side preview"
+                      width={200} // Placeholder width
+                      height={120} // Placeholder height
+                      objectFit="contain"
+                      className="max-w-full h-32 object-contain rounded border"
+                      unoptimized // Required for base64 images
+                    />
+                  </div>
+                )}
               </div>
             )}
 
             {cardType === "multiple-choice" && (
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <Label>Answer Options</Label>
+                  <Label>Answer Options (Use $$formula$$ for math)</Label>
                   <div className="flex gap-1">
                     <Button
                       type="button"
@@ -270,25 +397,57 @@ export function AddCardDialog({ open, onOpenChange, onAddCard }: AddCardDialogPr
                           ? "Multiple Choice"
                           : "True/False"}
                     </Badge>
+                    {(frontImage || backImage) && (
+                      <Badge variant="outline" className="text-xs gap-1">
+                        <ImageIcon className="w-3 h-3" />
+                        Has Images
+                      </Badge>
+                    )}
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     <div>
                       <p className="text-sm font-medium">Question:</p>
-                      <p className="text-sm text-slate-600 dark:text-slate-300">
-                        {front || "Your question will appear here..."}
-                      </p>
+                      <div className="text-sm text-slate-600 dark:text-slate-300">
+                        <MathRenderer content={front || "Your question will appear here..."} />
+                        {frontImage && (
+                          <Image
+                            src={frontImage || "/placeholder.svg"}
+                            alt="Question preview"
+                            width={150} // Smaller preview width
+                            height={90} // Smaller preview height
+                            objectFit="contain"
+                            className="mt-2 max-w-full h-20 object-contain rounded"
+                            unoptimized // Required for base64 images
+                          />
+                        )}
+                      </div>
                     </div>
                     <div>
                       <p className="text-sm font-medium">Answer:</p>
-                      <p className="text-sm text-slate-600 dark:text-slate-300">
-                        {cardType === "basic"
-                          ? back || "Your answer will appear here..."
-                          : cardType === "multiple-choice"
-                            ? options[correctAnswer] || "Select correct option..."
-                            : trueFalseAnswer
-                              ? "True"
-                              : "False"}
-                      </p>
+                      <div className="text-sm text-slate-600 dark:text-slate-300">
+                        <MathRenderer
+                          content={
+                            cardType === "basic"
+                              ? back || "Your answer will appear here..."
+                              : cardType === "multiple-choice"
+                                ? options[correctAnswer] || "Select correct option..."
+                                : trueFalseAnswer
+                                  ? "True"
+                                  : "False"
+                          }
+                        />
+                        {backImage && cardType === "basic" && (
+                          <Image
+                            src={backImage || "/placeholder.svg"}
+                            alt="Answer preview"
+                            width={150} // Smaller preview width
+                            height={90} // Smaller preview height
+                            objectFit="contain"
+                            className="mt-2 max-w-full h-20 object-contain rounded"
+                            unoptimized // Required for base64 images
+                          />
+                        )}
+                      </div>
                     </div>
                   </div>
                 </CardContent>

@@ -1,12 +1,14 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import Image from "next/image" // Import next/image
 import { ArrowLeft, RotateCcw, ChevronLeft, ChevronRight, Eye, EyeOff, Check, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { ThemeToggle } from "@/components/theme/theme-toggle"
+import { MathRenderer } from "@/components/math-renderer"
 import type { Deck } from "@/app/page"
 import type { ExtendedFlashcard } from "@/components/add-card-dialog"
 
@@ -94,7 +96,7 @@ export function StudyMode({ deck, onExit, onUpdateDeck }: StudyModeProps) {
 
   if (!currentCard) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-950 dark:to-black flex items-center justify-center">
+      <div className="min-h-screen dark:black flex items-center justify-center">
         <Card className="w-full max-w-md text-center">
           <CardContent className="pt-6">
             <h2 className="text-2xl font-bold mb-4">No cards to study</h2>
@@ -166,7 +168,22 @@ export function StudyMode({ deck, onExit, onUpdateDeck }: StudyModeProps) {
                   <h3 className="text-lg font-medium mb-3 text-slate-900 dark:text-slate-100">
                     {currentCard.type === "true-false" ? "Statement:" : "Question:"}
                   </h3>
-                  <p className="text-lg leading-relaxed text-slate-700 dark:text-slate-300">{currentCard.front}</p>
+                  <div className="text-lg leading-relaxed text-slate-700 dark:text-slate-300">
+                    <MathRenderer content={currentCard.front} />
+                  </div>
+                  {currentCard.frontImage && (
+                    <div className="mt-4">
+                      <Image
+                        src={currentCard.frontImage || "/placeholder.svg"}
+                        alt="Question illustration"
+                        width={400} // Larger width for study mode
+                        height={240} // Larger height for study mode
+                        objectFit="contain"
+                        className="max-w-full max-h-48 object-contain rounded-lg border mx-auto"
+                        unoptimized // Required for base64 images
+                      />
+                    </div>
+                  )}
                 </div>
 
                 {/* Answer Section */}
@@ -175,7 +192,22 @@ export function StudyMode({ deck, onExit, onUpdateDeck }: StudyModeProps) {
                     {isFlipped && (
                       <div>
                         <h3 className="text-lg font-medium mb-3 text-slate-900 dark:text-slate-100">Answer:</h3>
-                        <p className="text-lg leading-relaxed text-slate-700 dark:text-slate-300">{currentCard.back}</p>
+                        <div className="text-lg leading-relaxed text-slate-700 dark:text-slate-300">
+                          <MathRenderer content={currentCard.back} />
+                        </div>
+                        {currentCard.backImage && (
+                          <div className="mt-4">
+                            <Image
+                              src={currentCard.backImage || "/placeholder.svg"}
+                              alt="Answer illustration"
+                              width={400} // Larger width for study mode
+                              height={240} // Larger height for study mode
+                              objectFit="contain"
+                              className="max-w-full max-h-48 object-contain rounded-lg border mx-auto"
+                              unoptimized // Required for base64 images
+                            />
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
@@ -206,7 +238,9 @@ export function StudyMode({ deck, onExit, onUpdateDeck }: StudyModeProps) {
                         >
                           <div className="flex items-center gap-3 w-full">
                             <span className="font-medium text-sm">{String.fromCharCode(65 + index)}.</span>
-                            <span className="flex-1">{option}</span>
+                            <div className="flex-1">
+                              <MathRenderer content={option} />
+                            </div>
                             {showResult && index === currentCard.correctAnswer && (
                               <Check className="w-4 h-4 text-green-600" />
                             )}
@@ -226,13 +260,14 @@ export function StudyMode({ deck, onExit, onUpdateDeck }: StudyModeProps) {
                             <span className="text-red-600 dark:text-red-400">✗ Incorrect</span>
                           )}
                         </p>
-                        <p className="text-sm text-slate-600 dark:text-slate-400">
-                          The correct answer is: <strong>
-                            {typeof currentCard.correctAnswer === "number"
-                              ? currentCard.options[currentCard.correctAnswer]
-                              : ""}
+                        <div className="text-sm text-slate-600 dark:text-slate-400">
+                          The correct answer is:{" "}
+                          <strong>
+                            {typeof currentCard.correctAnswer === "number" && (
+                              <MathRenderer content={currentCard.options[currentCard.correctAnswer]} />
+                            )}
                           </strong>
-                        </p>
+                        </div>
                       </div>
                     )}
                   </div>
