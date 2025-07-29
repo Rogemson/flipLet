@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Plus, BookOpen, Edit, Trash2, Play } from "lucide-react"
+import { Plus, BookOpen, Edit, Trash2, Play, Github, Facebook, Linkedin } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -100,7 +100,29 @@ export default function Home() {
             <p className="text-slate-600 dark:text-slate-400">Create and study flashcards offline</p>
           </div>
           <div className="flex items-center gap-3">
+            {/* Social Links */}
+            <div className="flex items-center gap-1">
+              <Button variant="ghost" size="sm" asChild>
+                <a href="https://github.com/rogemson" target="_blank" rel="noopener noreferrer" title="GitHub">
+                  <Github className="w-4 h-4" />
+                </a>
+              </Button>
+              
+              <Button variant="ghost" size="sm" asChild>
+                <a href="https://www.facebook.com/rgmsnmln" target="_blank" rel="noopener noreferrer" title="Twitter">
+                  <Facebook className="w-4 h-4" />
+                </a>
+              </Button>
+              
+              <Button variant="ghost" size="sm" asChild>
+                <a href="https://www.linkedin.com/in/rogemson-molina/" target="_blank" rel="noopener noreferrer" title="LinkedIn">
+                  <Linkedin className="w-4 h-4" />
+                </a>
+              </Button>
+            </div>
+            
             <ThemeToggle />
+            
             <Button onClick={() => setIsCreateDialogOpen(true)} className="gap-2" size="lg">
               <Plus className="w-5 h-5" />
               Create Deck
