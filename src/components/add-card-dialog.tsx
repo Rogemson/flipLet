@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import Image from "next/image" // Import next/image
+import Image from "next/image"
 
 import { useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
@@ -20,6 +20,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Plus, Minus, Upload, X, ImageIcon } from "lucide-react"
+import { Checkbox } from "@/components/ui/checkbox"
 import type { Flashcard } from "@/app/page"
 import { MathRenderer } from "@/components/math-renderer"
 
@@ -31,6 +32,7 @@ export interface ExtendedFlashcard extends Flashcard {
   correctAnswer?: number | boolean
   frontImage?: string
   backImage?: string
+  requiresTyping?: boolean
 }
 
 interface AddCardDialogProps {
@@ -48,6 +50,7 @@ export function AddCardDialog({ open, onOpenChange, onAddCard }: AddCardDialogPr
   const [trueFalseAnswer, setTrueFalseAnswer] = useState<boolean>(true)
   const [frontImage, setFrontImage] = useState<string>("")
   const [backImage, setBackImage] = useState<string>("")
+  const [requiresTyping, setRequiresTyping] = useState(false)
 
   const frontImageRef = useRef<HTMLInputElement>(null)
   const backImageRef = useRef<HTMLInputElement>(null)
@@ -61,6 +64,7 @@ export function AddCardDialog({ open, onOpenChange, onAddCard }: AddCardDialogPr
     setTrueFalseAnswer(true)
     setFrontImage("")
     setBackImage("")
+    setRequiresTyping(false)
   }
 
   const handleImageUpload = (file: File, side: "front" | "back") => {
@@ -114,6 +118,7 @@ export function AddCardDialog({ open, onOpenChange, onAddCard }: AddCardDialogPr
           type: cardType,
           frontImage: frontImage || undefined,
           backImage: backImage || undefined,
+          requiresTyping: requiresTyping,
         }
     }
 
@@ -231,11 +236,11 @@ export function AddCardDialog({ open, onOpenChange, onAddCard }: AddCardDialogPr
                   <Image
                     src={frontImage || "/placeholder.svg"}
                     alt="Front side preview"
-                    width={200} // Placeholder width
-                    height={120} // Placeholder height
+                    width={200}
+                    height={120}
                     objectFit="contain"
                     className="max-w-full h-32 object-contain rounded border"
-                    unoptimized // Required for base64 images
+                    unoptimized
                   />
                 </div>
               )}
@@ -293,14 +298,29 @@ export function AddCardDialog({ open, onOpenChange, onAddCard }: AddCardDialogPr
                     <Image
                       src={backImage || "/placeholder.svg"}
                       alt="Back side preview"
-                      width={200} // Placeholder width
-                      height={120} // Placeholder height
+                      width={200}
+                      height={120}
                       objectFit="contain"
                       className="max-w-full h-32 object-contain rounded border"
-                      unoptimized // Required for base64 images
+                      unoptimized
                     />
                   </div>
                 )}
+
+                {/* Requires Typing Checkbox */}
+                <div className="flex items-center space-x-2 mt-4">
+                  <Checkbox
+                    id="requires-typing"
+                    checked={requiresTyping}
+                    onCheckedChange={(checked) => setRequiresTyping(!!checked)}
+                  />
+                  <Label
+                    htmlFor="requires-typing"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Require typed answer in study mode
+                  </Label>
+                </div>
               </div>
             )}
 
@@ -413,11 +433,11 @@ export function AddCardDialog({ open, onOpenChange, onAddCard }: AddCardDialogPr
                           <Image
                             src={frontImage || "/placeholder.svg"}
                             alt="Question preview"
-                            width={150} // Smaller preview width
-                            height={90} // Smaller preview height
+                            width={150}
+                            height={90}
                             objectFit="contain"
                             className="mt-2 max-w-full h-20 object-contain rounded"
-                            unoptimized // Required for base64 images
+                            unoptimized
                           />
                         )}
                       </div>
@@ -440,11 +460,11 @@ export function AddCardDialog({ open, onOpenChange, onAddCard }: AddCardDialogPr
                           <Image
                             src={backImage || "/placeholder.svg"}
                             alt="Answer preview"
-                            width={150} // Smaller preview width
-                            height={90} // Smaller preview height
+                            width={150} 
+                            height={90} 
                             objectFit="contain"
                             className="mt-2 max-w-full h-20 object-contain rounded"
-                            unoptimized // Required for base64 images
+                            unoptimized
                           />
                         )}
                       </div>

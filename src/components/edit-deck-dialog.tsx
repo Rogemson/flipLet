@@ -22,14 +22,7 @@ interface EditDeckDialogProps {
 export function EditDeckDialog({ open, onOpenChange, deck, onUpdateDeck }: EditDeckDialogProps) {
   const [name, setName] = useState(deck.name)
   const [description, setDescription] = useState(deck.description)
-  const [cards, setCards] = useState<ExtendedFlashcard[]>(
-    deck.cards.map((card: ExtendedFlashcard) => ({
-      ...card,
-      type: (card.type ?? "basic") as ExtendedFlashcard["type"],
-      options: card.options ?? [],
-      correctAnswer: card.correctAnswer ?? undefined,
-    }))
-  )
+  const [cards, setCards] = useState<ExtendedFlashcard[]>(deck.cards)
   const [editingCard, setEditingCard] = useState<ExtendedFlashcard | null>(null)
   const [isEditingDeckInfo, setIsEditingDeckInfo] = useState(false)
   const [isAddCardDialogOpen, setIsAddCardDialogOpen] = useState(false)
@@ -37,14 +30,7 @@ export function EditDeckDialog({ open, onOpenChange, deck, onUpdateDeck }: EditD
   useEffect(() => {
     setName(deck.name)
     setDescription(deck.description)
-    setCards(
-      deck.cards.map((card: ExtendedFlashcard) => ({
-        ...card,
-        type: (card.type ?? "basic") as ExtendedFlashcard["type"],
-        options: card.options ?? [],
-        correctAnswer: card.correctAnswer ?? undefined,
-      }))
-    )
+    setCards(deck.cards)
     setIsEditingDeckInfo(false)
   }, [deck])
 
@@ -114,17 +100,18 @@ export function EditDeckDialog({ open, onOpenChange, deck, onUpdateDeck }: EditD
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-[900px] max-h-[85vh] overflow-hidden flex flex-col">
+        <DialogContent className="sm:max-w-[900px] max-h-[85vh] flex flex-col">
           <DialogHeader>
             <DialogTitle>Edit Deck</DialogTitle>
             <DialogDescription>Modify your deck details and manage flashcards.</DialogDescription>
           </DialogHeader>
 
-          <div className="flex-1 overflow-hidden">
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-full">
+          {/* Main content area - now truly flex-1 */}
+          <div className="flex-1 overflow-hidden min-h-0 flex flex-col">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 flex-1 min-h-0">
               {/* Left Panel - Deck Info */}
-              <div className="lg:col-span-1 space-y-4">
-                <div className="bg-slate-50 dark:bg-slate-900/50 rounded-lg p-4">
+              <div className="lg:col-span-1 space-y-4 flex flex-col">
+                <div className="bg-slate-50 dark:bg-slate-900/50 rounded-lg p-4 flex-shrink-0">
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="font-semibold text-slate-900 dark:text-slate-100">Deck Information</h3>
                     <Button variant="ghost" size="sm" onClick={() => setIsEditingDeckInfo(!isEditingDeckInfo)}>
@@ -189,13 +176,14 @@ export function EditDeckDialog({ open, onOpenChange, deck, onUpdateDeck }: EditD
               </div>
 
               {/* Right Panel - Cards */}
-              <div className="lg:col-span-3 flex flex-col">
-                <div className="flex items-center justify-between mb-4">
+              <div className="lg:col-span-3 flex flex-col flex-1 min-h-0">
+                <div className="flex items-center justify-between mb-4 flex-shrink-0">
                   <h3 className="font-semibold text-slate-900 dark:text-slate-100">Flashcards</h3>
                   <Badge variant="secondary">{cards.length} cards</Badge>
                 </div>
 
-                <div className="flex-1 overflow-y-auto">
+                {/* Scrollable area for cards */}
+                <div className="flex-1 overflow-y-auto pr-2">
                   {cards.length === 0 ? (
                     <div className="text-center py-12 text-slate-500 dark:text-slate-400">
                       <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-8">
@@ -204,7 +192,7 @@ export function EditDeckDialog({ open, onOpenChange, deck, onUpdateDeck }: EditD
                       </div>
                     </div>
                   ) : (
-                    <div className="space-y-3 pr-2">
+                    <div className="space-y-3">
                       {cards.map((card) => (
                         <Card key={card.id} className="hover:shadow-md transition-shadow">
                           {editingCard?.id === card.id ? (
@@ -281,7 +269,7 @@ export function EditDeckDialog({ open, onOpenChange, deck, onUpdateDeck }: EditD
             </div>
           </div>
 
-          <div className="flex justify-end gap-2 pt-4 border-t">
+          <div className="flex justify-end gap-2 pt-4 border-t flex-shrink-0">
             <Button variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>

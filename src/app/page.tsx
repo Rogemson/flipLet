@@ -10,7 +10,6 @@ import { StudyMode } from "@/components/study-mode"
 import { EditDeckDialog } from "@/components/edit-deck-dialog"
 import { ThemeToggle } from "@/components/theme/theme-toggle"
 import type { ExtendedFlashcard } from "@/components/add-card-dialog"
-import { Github, Linkedin, Twitter, Facebook } from "lucide-react"
 
 export interface Flashcard {
   id: string
@@ -35,25 +34,24 @@ export default function Home() {
   const [selectedDeck, setSelectedDeck] = useState<Deck | null>(null)
   const [studyDeck, setStudyDeck] = useState<Deck | null>(null)
 
-  // Load decks from localStorage on mount
   useEffect(() => {
     const savedDecks = localStorage.getItem("flashcard-decks")
     if (savedDecks) {
-      const parsedDecks = (JSON.parse(savedDecks) as Deck[]).map((deck) => ({
+      const parsedDecks = (JSON.parse(savedDecks) as Deck[]).map((deck: Deck) => ({
         ...deck,
         createdAt: new Date(deck.createdAt),
         lastStudied: deck.lastStudied ? new Date(deck.lastStudied) : undefined,
-        cards: deck.cards.map((card) => ({
+        cards: deck.cards.map((card: ExtendedFlashcard) => ({
           ...card,
           createdAt: new Date(card.createdAt),
-          type: (card as ExtendedFlashcard).type || "basic",
+          type: card.type || "basic",
+          requiresTyping: card.requiresTyping || false,
         })),
       }))
       setDecks(parsedDecks)
     }
   }, [])
 
-  // Save decks to localStorage whenever decks change
   useEffect(() => {
     localStorage.setItem("flashcard-decks", JSON.stringify(decks))
   }, [decks])
@@ -96,51 +94,17 @@ export default function Home() {
   return (
     <div className="min-h-screen dark:black">
       <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
-          {/* Title */}
+        <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">Flashcard Reviewer</h1>
-            <p className="text-slate-600 dark:text-slate-400">Create and study flashcards with ease</p>
+            <h1 className="text-4xl font-bold text-slate-900 dark:text-slate-100 mb-2">Flashcard Generator</h1>
+            <p className="text-slate-600 dark:text-slate-400">Create and study flashcards offline</p>
           </div>
-
-          {/* Buttons and Socials */}
-          <div className="flex items-center gap-4 flex-wrap">
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
             <Button onClick={() => setIsCreateDialogOpen(true)} className="gap-2" size="lg">
               <Plus className="w-5 h-5" />
               Create Deck
             </Button>
-
-            <Button variant="outline" size="lg" onClick={() => window.open("https://your-link.com", "_blank")}>
-              Share App
-            </Button>
-
-            <div className="flex items-center gap-3 ml-2">
-              <a
-                href="https://github.com/Rogemson"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-slate-600 dark:text-slate-300 hover:text-black dark:hover:text-white transition"
-              >
-                <Github className="w-5 h-5" />
-              </a>
-              <a
-                href="www.linkedin.com/in/rogemson-molina"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-slate-600 dark:text-slate-300 hover:text-blue-700 transition"
-              >
-                <Linkedin className="w-5 h-5" />
-              </a>
-              <a
-                href="https://www.facebook.com/rgmsnmln"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-slate-600 dark:text-slate-300 hover:text-blue-500 transition"
-              >
-                <Facebook className="w-5 h-5" />
-              </a>
-              <ThemeToggle />
-            </div>
           </div>
         </div>
 
