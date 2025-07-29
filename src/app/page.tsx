@@ -131,19 +131,19 @@ export default function Home() {
               {/* Desktop: Social links inline */}
               <div className="hidden md:flex items-center gap-1">
                 <Button variant="ghost" size="sm" asChild>
-                  <a href="https://github.com" target="_blank" rel="noopener noreferrer" title="GitHub">
+                  <a href="https://github.com/rogemson" target="_blank" rel="noopener noreferrer" title="GitHub">
                     <Github className="w-4 h-4" />
                   </a>
                 </Button>
                 
                 <Button variant="ghost" size="sm" asChild>
-                  <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" title="Twitter">
+                  <a href="https://facebook.com/rgmsnmln" target="_blank" rel="noopener noreferrer" title="Twitter">
                     <Facebook className="w-4 h-4" />
                   </a>
                 </Button>
                 
                 <Button variant="ghost" size="sm" asChild>
-                  <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" title="LinkedIn">
+                  <a href="https://www.linkedin.com/in/rogemson-molina/" target="_blank" rel="noopener noreferrer" title="LinkedIn">
                     <Linkedin className="w-4 h-4" />
                   </a>
                 </Button>
