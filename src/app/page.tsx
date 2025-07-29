@@ -39,14 +39,14 @@ export default function Home() {
   useEffect(() => {
     const savedDecks = localStorage.getItem("flashcard-decks")
     if (savedDecks) {
-      const parsedDecks = JSON.parse(savedDecks).map((deck: any) => ({
+      const parsedDecks = (JSON.parse(savedDecks) as Deck[]).map((deck) => ({
         ...deck,
         createdAt: new Date(deck.createdAt),
         lastStudied: deck.lastStudied ? new Date(deck.lastStudied) : undefined,
-        cards: deck.cards.map((card: any) => ({
+        cards: deck.cards.map((card) => ({
           ...card,
           createdAt: new Date(card.createdAt),
-          type: card.type || "basic",
+          type: (card as ExtendedFlashcard).type || "basic",
         })),
       }))
       setDecks(parsedDecks)

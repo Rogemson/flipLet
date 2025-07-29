@@ -349,7 +349,7 @@ export function StudyMode({ deck, onExit, onUpdateDeck }: StudyModeProps) {
               <CardContent className="pt-6">
                 <h3 className="text-xl font-semibold mb-2">Study Session Complete! 🎉</h3>
                 <p className="text-slate-600 dark:text-slate-400 mb-4">
-                  You've reviewed all {deck.cards.length} cards in this deck.
+                  You`&apos;`ve reviewed all {deck.cards.length} cards in this deck.
                 </p>
                 <div className="flex gap-2 justify-center">
                   <Button onClick={resetStudy} variant="outline">

@@ -23,7 +23,7 @@ export function EditDeckDialog({ open, onOpenChange, deck, onUpdateDeck }: EditD
   const [name, setName] = useState(deck.name)
   const [description, setDescription] = useState(deck.description)
   const [cards, setCards] = useState<ExtendedFlashcard[]>(
-    deck.cards.map((card: any) => ({
+    deck.cards.map((card: ExtendedFlashcard) => ({
       ...card,
       type: (card.type ?? "basic") as ExtendedFlashcard["type"],
       options: card.options ?? [],
@@ -38,7 +38,7 @@ export function EditDeckDialog({ open, onOpenChange, deck, onUpdateDeck }: EditD
     setName(deck.name)
     setDescription(deck.description)
     setCards(
-      deck.cards.map((card: any) => ({
+      deck.cards.map((card: ExtendedFlashcard) => ({
         ...card,
         type: (card.type ?? "basic") as ExtendedFlashcard["type"],
         options: card.options ?? [],
@@ -200,7 +200,7 @@ export function EditDeckDialog({ open, onOpenChange, deck, onUpdateDeck }: EditD
                     <div className="text-center py-12 text-slate-500 dark:text-slate-400">
                       <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-8">
                         <p className="text-sm">No flashcards yet.</p>
-                        <p className="text-xs mt-1">Click "Add New Card" to get started!</p>
+                        <p className="text-xs mt-1">Click `&quot;`Add New Card`&quot;` to get started!</p>
                       </div>
                     </div>
                   ) : (
